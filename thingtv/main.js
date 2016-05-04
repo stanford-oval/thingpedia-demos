@@ -65,6 +65,7 @@ function main() {
 
     app.thingtv = {};
     app.thingtv.clients = [];
+    app.thingtv.webhooks = [];
 
     // mount /api before CSRF
     // as we don't need CSRF protection for that

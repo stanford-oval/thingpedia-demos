@@ -13,11 +13,41 @@ var urlFormatters = {
     }
 };
 
+router.post('/webhook', function(req, res, next) {
+    if (!req.query.callback) {
+        res.status(400).json({ error: 'Bad request' });
+        return;
+    }
+
+    var callback = req.query.callback;
+    var webhooks = req.app.thingtv.webhooks;
+
+    if (webhooks.indexOf(callback) < 0)
+        webhooks.push(callback);
+    res.status(200).json({ result: 'ok' });
+});
+
+router.delete('/webhook', function(req, res, next) {
+    if (!req.query.callback) {
+        res.status(400).json({ error: 'Bad request' });
+        return;
+    }
+
+    var callback = req.query.callback;
+    var webhooks = req.app.thingtv.webhooks;
+
+    var idx = webhooks.indexOf(callback);
+    if (idx >= 0)
+        webhooks.splice(idx, 1);
+    res.status(200).json({ result: 'ok' });
+});
+
 router.post('/switch-to', function(req, res, next) {
     var body = req.body;
     if (typeof body != 'object') {
         res.status(400).json({ error: 'Bad request' });
     }
+    console.log('body', req.body);
 
     var url;
     var yt = false;

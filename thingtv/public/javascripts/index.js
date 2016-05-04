@@ -1,7 +1,8 @@
 $(function() {
     var retryCount = 0;
+    var sock;
     function openSocket() {
-        var sock = new WebSocket('ws://127.0.0.1:4444/client', 'thingtv');
+        sock = new WebSocket('ws://127.0.0.1:4444/client', 'thingtv');
 
         retryCount ++;
         sock.onclose = function() {
@@ -56,6 +57,17 @@ $(function() {
         // 3 buffering
         // 5 video cued
         // do something
+
+        var url = $('#content').attr('src');
+        var state = null;
+        if (event.data === 0)
+            state = 'eos';
+        else if (event.data === 1)
+            state = 'playing';
+        else if (event.data === 2)
+            state = 'paused';
+        if (state !== null)
+            sock.send(JSON.stringify({ type: 'event', event: { state: state, url: url } }));
     }
 
     function setState(state) {
